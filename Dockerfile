@@ -2,22 +2,23 @@ FROM php:8.2-cli
 
 WORKDIR /var/www
 
-# تثبيت الأدوات اللازمة
 RUN apt-get update && apt-get install -y \
     git unzip libzip-dev zip \
-    && docker-php-ext-install zip
+    libonig-dev \
+    && docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        mbstring \
+        zip \
+        bcmath
 
-# تثبيت Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# نسخ الملفات
 COPY . .
 
-# تثبيت الحزم
 RUN composer install --no-dev --optimize-autoloader
 
-# توليد مفتاح التطبيق
-RUN php artisan key:generate
+RUN cp .env.example .env || true
 
 EXPOSE 10000
 
