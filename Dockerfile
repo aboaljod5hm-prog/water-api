@@ -4,13 +4,15 @@ WORKDIR /var/www
 
 RUN apt-get update && apt-get install -y \
     git unzip libzip-dev zip \
+    libpng-dev \
     libonig-dev \
     && docker-php-ext-install \
         pdo \
         pdo_mysql \
         mbstring \
         zip \
-        bcmath
+        bcmath \
+        gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
