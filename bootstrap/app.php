@@ -12,18 +12,17 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->statefulApi();
 
-        // السماح لـ React بالاتصال
-        $middleware->validateCsrfTokens(except: ['api/*']);
-         
-    $middleware->statefulApi();
-    $middleware->validateCsrfTokens(except: ['api/*']);
+    ->withMiddleware(function (Middleware $middleware): void {
+        // لا نستخدم statefulApi
+        // لا نستخدم CSRF للـ API
     })
+
     ->withExceptions(function (Exceptions $exceptions): void {
-        // إرجاع JSON دائماً للـ API
+        // إرجاع JSON دائماً لطلبات API
         $exceptions->shouldRenderJsonWhen(function (Request $request) {
             return $request->is('api/*');
         });
-    })->create();
+    })
+
+    ->create();
